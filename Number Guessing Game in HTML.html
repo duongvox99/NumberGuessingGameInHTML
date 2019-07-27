@@ -1,0 +1,113 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Number Guessing Game in HTML</title>
+
+    <style>
+        body {
+            text-align: center;
+        }
+
+        #message {
+            padding: 5px;
+        }
+        #number {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="message">Please type any number</div>
+
+    <input type="number" id="number">
+
+    <button id="guessButton">Guess</button>
+
+
+    <h3>Past Guesses:</h3>
+    <p id="passGuess"></p>
+
+    <script>
+        document.getElementById("number").focus();
+
+        let min = 1;
+        let max = 100;
+        let finalNumber = Math.floor(Math.random() * (+max - +min)) + +min;
+        console.log("Final number is: " + finalNumber);
+
+        const LIMIT_NUMBER_GUESS = 7; // limit to if player use binary search to find the final number which random from 1 to 100
+        let countGuess = LIMIT_NUMBER_GUESS;
+        console.log("Number of guess is: " + countGuess);
+
+        let input = document.getElementById("number");
+        input.addEventListener("keyup", function (event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                document.getElementById("guessButton").click();
+            }
+        });
+
+
+        let button = document.getElementById("guessButton");
+        button.addEventListener("click", function () {
+            countGuess--;
+
+            let userGuess = document.getElementById("number").value;
+            let numUserGuess = parseInt(userGuess, 10);
+            if (isNaN(numUserGuess)) {
+                alert("Please check your input! It is not a number");
+                return 0;
+            }
+
+            console.log("Your guess: " + numUserGuess);
+
+            if (numUserGuess < finalNumber) {
+                document.getElementById("message").innerHTML = "Sorry your guess is too low. You have " + countGuess + " guesses left";
+                document.getElementById("message").style.backgroundColor = "red"
+            } else if (numUserGuess > finalNumber) {
+                document.getElementById("message").innerHTML = "Sorry your guess is too high. You have " + countGuess + " guesses left";
+                document.getElementById("message").style.backgroundColor = "red"
+            } else if (numUserGuess == finalNumber) {
+                document.getElementById("message").innerHTML = "Congratulations!! You guessed correctly. You need " + (LIMIT_NUMBER_GUESS - countGuess) + " turns to sucess";
+                document.getElementById("message").style.backgroundColor = "green"
+                document.getElementById("guessButton").disabled = true;
+                document.getElementById("number").disabled = true;
+
+                if (confirm("You WIN. Final number is: " + finalNumber + "\nDo you want to play again?")) {
+                    location.reload();
+                } else {
+                    // Do nothing!
+                }
+
+                return 0;
+            }
+
+            document.getElementById("passGuess").innerHTML = numUserGuess + "<br>" + document.getElementById("passGuess").innerHTML;
+            document.getElementById("number").value = "";
+            document.getElementById("number").focus();
+
+            if (countGuess <= 0) {
+                document.getElementById("message").innerHTML = "Out of number of limit guess";
+                document.getElementById("message").style.backgroundColor = "red"
+                document.getElementById("guessButton").disabled = true;
+                document.getElementById("number").disabled = true;
+
+                if (confirm("You LOSE. Final number is: " + finalNumber + "\nDo you want to try again?")) {
+                    location.reload();
+                } else {
+                    // Do nothing!
+                }
+
+            }
+        });
+    </script>
+</body>
+
+</html>
